@@ -1,49 +1,45 @@
 ---
 - hosts: prod
+
   tasks:
-        - name: Installs apache web server
-          apt: 
-           name: apache2 
-           state: latest
-           update_cache: yes
-        - name: Installs nginx
-          apt: 
-           name: nginx 
-           state: latest
-
-        - name: Clean cfg
-	  file:
-	    state: absent
-	    path: "/etc/apache2/sites-available/"
-
-	- name: Clean cfg ng
-	  file:
-	    state: absent
-	    path: "/etc/nginx/sites-available/"
-
-	- name: Clean site
-	  file:
-	    state: absent
-            path: "/var/www/html"
-
-
-	- name: copy cfgap
-	  copy: src=/etc/apache2/sites-available/ dest=/etc/apache2/ remote_src=yes directory_mode=yes
-
-
-	- name: copy cfgng
-	  copy: src=/etc/nginx/sites-available/ dest=/etc/nginx/ remote_src=yes directory_mode=yes
-	
-	- name: copy site
-	  copy: src=/var/www/html/ dest=/etc/www/ remote_src=yes directory_mode=yes
-
-
-	- service:
-	    name: apache2
-	    state: restated
-
-	- service:
-	    name: nginx
-	    state: restarted
- 
-	     
+    - name: Installs apache web server
+      apt: 
+        name: apache2 
+        state: latest
+        update_cache: yes
+    - name: Installs nginx
+      apt: 
+        name: nginx 
+        state: latest
+    - name: Clean cfg
+      file:
+        state: absent
+        path: "/etc/apache2/sites-available/"
+    - name: Clean cfg ng
+      file:
+        state: absent
+        path: "/etc/nginx/sites-available/"
+    - name: Clean site
+      file:
+        state: absent
+        path: "/var/www/html"
+    - name: copy cfgap
+      copy: 
+        src: /tmp/cicdlab/apache/sites-available
+        dest: /etc/apache2/
+    - name: copy cfgng
+      copy: 
+        src: /tmp/cicdlab/nginx/sites-available
+        dest: /etc/nginx/ 
+    - name: copy site
+      copy: 
+        src: /var/www/html/ 
+        dest: /etc/www/ 
+    - name: Restart apache
+      service:
+        name: apache2
+        state: restarted
+    - name: Restart nginx 
+      service:
+        name: nginx
+        state: restarted
